@@ -1,7 +1,7 @@
 /*
  * @Date: 2021-11-03 09:21:12
  * @LastEditors: tortorse
- * @LastEditTime: 2021-11-03 12:33:01
+ * @LastEditTime: 2021-11-03 12:38:43
  * @FilePath: \web-samples\string-file\index.js
  */
 const localeFileContent = `/* Localized versions of Info.plist keys */
@@ -110,15 +110,15 @@ const parse = (input, wantsComments) => {
       let map = {
         name: msgid,
         value: msgstr,
-      }
+      };
       result.push(map);
     } else {
       let map = {
         name: msgid,
         value: msgstr,
-      }
+      };
       if (currentComment) {
-        map['comment'] = currentComment;
+        map["comment"] = currentComment;
         currentComment = "";
       }
       result.push(map);
@@ -131,14 +131,15 @@ const localeMap = parse(localeFileContent, true);
 
 const localesWrapper = document.querySelector("#locales");
 const table = document.createElement("table");
-localeMap.forEach(locale => {
+localeMap.forEach((locale) => {
   const tr = document.createElement("tr");
+  const comment = document.createElement("td");
   const name = document.createElement("td");
   const value = document.createElement("td");
-  
+  comment.textContent = `${locale.comment ? "/* " + locale.comment + " */" : ""}`;
   name.textContent = locale.name;
   value.textContent = locale.value;
-  
+  tr.appendChild(comment);
   tr.appendChild(name);
   tr.appendChild(value);
   table.appendChild(tr);
