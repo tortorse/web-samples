@@ -1,3 +1,9 @@
+/*
+ * @Date: 2021-11-02 16:49:52
+ * @LastEditors: tortorse
+ * @LastEditTime: 2021-11-03 12:51:03
+ * @FilePath: \web-samples\ast\index.js
+ */
 const codeToAst = (code) => {
   if (code) {
     return esprima.parse(code, {
@@ -58,7 +64,7 @@ const pickKeyValueMap = (ast) => {
             const { key,value } = property;
             if (key.type === "Identifier") {
               map.push({
-                key: key.name,
+                name: key.name,
                 value: value.value,
               });
             }
@@ -69,6 +75,20 @@ const pickKeyValueMap = (ast) => {
   });
   return map;
 }
-console.log(ast);
-const dict = pickKeyValueMap(ast);
-console.log(dict);
+const localeMap = pickKeyValueMap(ast);
+
+const localesWrapper = document.querySelector("#locales");
+const table = document.createElement("table");
+localeMap.forEach(locale => {
+  const tr = document.createElement("tr");
+  const name = document.createElement("td");
+  const value = document.createElement("td");
+  
+  name.textContent = locale.name;
+  value.textContent = locale.value;
+  
+  tr.appendChild(name);
+  tr.appendChild(value);
+  table.appendChild(tr);
+});
+localesWrapper.appendChild(table);
