@@ -7,8 +7,10 @@ let isDragging = false;
 let isReady = false;
 let startPoint;
 let graphicsStartPoint;
+let selectedColor;
 let scale = 1;
-const gridSize = { width: 10, height: 10 };
+let zoomed = false;
+const gridSize = { width: 256, height: 256 };
 const cellSize = { width: 20, height: 20 };
 const canvasBackround = 0x242336;
 const gridFillColor = 0x212137;
@@ -64,6 +66,7 @@ function setup() {
   graphics.position.x = -graphics.width / 2;
   graphics.position.y = -graphics.height / 2;
 
+
   // add the graphics to the container
   container.addChild(graphics);
 
@@ -98,6 +101,8 @@ function setup() {
   // we can keep the canvas the correct
   // size
   window.addEventListener("resize", resizeCanvas);
+
+  resizeCanvas();
 }
 
 function drawLine(x1, y1, x2, y2) {
@@ -107,11 +112,11 @@ function drawLine(x1, y1, x2, y2) {
 
 function resizeCanvas() {
   // resize the canvas to fill the screen
-  // app.renderer.resize(window.innerWidth, window.innerHeight);
+  app.renderer.resize(window.innerWidth, window.innerHeight);
   // center the container to the new
   // window size.
-  // container.position.x = window.innerWidth / 2;
-  // container.position.y = window.innerHeight / 2;
+  container.position.x = window.innerWidth / 2;
+  container.position.y = window.innerHeight / 2;
 }
 
 function onDown(e) {
@@ -175,11 +180,17 @@ function onUp(e) {
     // clear mouseDown flag
     isMouseDown = false;
     // if the dragging flag was never set
-		// during all the mouse moves then this 
-		// is a click
+    // during all the mouse moves then this
+    // is a click
     if (!isDragging) {
-
+      // if a color has been selected and
+      // the view is zoomed in then this
+      // click is to draw a new pixel
+      if (selectedColor && zoomed) {
+        
+      }
     }
+    isDragging = false;
   }
 }
 
