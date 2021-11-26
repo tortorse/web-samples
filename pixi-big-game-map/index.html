@@ -5,9 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pixi Game Map</title>
+    <style>
+      .zoom-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #fff;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <div id="canvas"></div>
+    <div class="zoom-controls">
+      <div id="zoom-in">+</div>
+      <div id="zoom-out">-</div>
+    </div>
     <script src="//pixijs.download/release/pixi.js"></script>
     <script src="./index.js"></script>
   </body>

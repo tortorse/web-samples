@@ -1,20 +1,28 @@
 let app;
 let container;
 let graphics;
+let gridCells;
+let gridCell;
 let gridLines;
 let isMouseDown = false;
 let isDragging = false;
 let isReady = false;
 let startPoint;
-let graphicsStartPoint;
+let gridCellsStartPoint;
 let selectedColor;
 let scale = 1;
 let zoomed = false;
+const zoomLevel = 6;
 const gridSize = { width: 256, height: 256 };
-const cellSize = { width: 20, height: 20 };
+const cellSize = { width: 4, height: 4 };
 const canvasBackround = 0x242336;
 const gridFillColor = 0x212137;
 const gridLineColor = 0x171528;
+
+// Get DOM elements
+const zoomInButton = document.getElementById("zoom-in");
+const zoomOutButton = document.getElementById("zoom-out");
+
 let canvasContainer = document.getElementById("canvas");
 function setup() {
   // Setting up canvas with Pixi.js
@@ -30,79 +38,100 @@ function setup() {
   // create a contianer for thr grid
   // container will be used for zooming
   container = new PIXI.Container();
+  container.sortableChildren = true;
+  container.zIndex = 0;
 
   // add the container to the stage
-  app.stage.addChild(container);
+  app.stage.addChildAt(container, 0);
 
   // graphic is the canvas we draw the
   // pixel on, well also move this around
   // when the user drags around
-  graphics = new PIXI.Graphics();
+  gridCells = new PIXI.Graphics();
 
   // specifies the fill style for the Graphics object.
-  graphics.beginFill(gridFillColor);
-  // draw grid
-  graphics.drawRect(
-    0,
-    0,
-    gridSize.width * cellSize.width,
-    gridSize.height * cellSize.height
-  );
+
+  const backgroudImage = PIXI.Sprite.from("images/metaverse.webp");
+
+  gridCells.addChild(backgroudImage);
+
   // set graphic interactive
-  graphics.interactive = true;
+  gridCells.interactive = true;
 
   // setup input listeners, we use
   // pointerdown, pointermove, etc
   // rather than mousedown, mousemove,
   // etc, because it triggers on both
   // mouse and touch
-  graphics.on("pointerdonw", onDown);
-  graphics.on("pointermove", onMove);
-  graphics.on("pointerup", onUp);
-  graphics.on("pointerupoutside", onUp);
+  gridCells.on("pointerdown", onDown);
+  gridCells.on("pointermove", onMove);
+  gridCells.on("pointerup", onUp);
+  gridCells.on("pointerupoutside", onUp);
 
   // move graphics so that it's center
   // is at x0 y0
-  graphics.position.x = -graphics.width / 2;
-  graphics.position.y = -graphics.height / 2;
-
+  gridCells.position.x = -gridCells.width / 2;
+  gridCells.position.y = -gridCells.height / 2;
 
   // add the graphics to the container
-  container.addChild(graphics);
+  container.addChild(gridCells);
 
   // draw grid lines
-  gridLines = new PIXI.Graphics();
-  gridLines.lineStyle(1, gridLineColor, 1);
+  // gridLines = new PIXI.Graphics();
+  // gridLines.lineStyle(1, gridLineColor, 1);
 
-  gridLines.position.x = graphics.position.x;
-  gridLines.position.y = graphics.position.y;
+  // gridLines.position.x = gridCells.position.x;
+  // gridLines.position.y = gridCells.position.y;
 
-  for (let i = 0; i <= gridSize.width; i++) {
-    drawLine(
-      0,
-      i * cellSize.width,
-      gridSize.width * cellSize.width,
-      i * cellSize.width
-    );
-  }
+  // for (let i = 0; i <= gridSize.width; i++) {
+  //   drawLine(
+  //     0,
+  //     i * cellSize.width,
+  //     gridSize.width * cellSize.width,
+  //     i * cellSize.width
+  //   );
+  // }
 
-  for (let j = 0; j <= gridSize.height; j++) {
-    drawLine(
-      j * cellSize.height,
-      0,
-      j * cellSize.height,
-      gridSize.height * cellSize.height
-    );
-  }
+  // for (let j = 0; j <= gridSize.height; j++) {
+  //   drawLine(
+  //     j * cellSize.height,
+  //     0,
+  //     j * cellSize.height,
+  //     gridSize.height * cellSize.height
+  //   );
+  // }
 
-  container.addChild(gridLines);
+  // container.addChild(gridLines);
 
+  graphics = new PIXI.Graphics();
+  graphics.position.x = -gridCells.width / 2;
+  graphics.position.y = -gridCells.height / 2;
+
+  container.addChild(graphics);
+  gridCell = new PIXI.Graphics();
+  // gridCell.beginFill(gridFillColor);
+  // draw grid
+  gridCell.drawRect(
+    0,
+    0,
+    gridSize.width * cellSize.width,
+    gridSize.height * cellSize.height
+  );
+  container.addChild(gridCell);
   // start page resize listener, so
   // we can keep the canvas the correct
   // size
   window.addEventListener("resize", resizeCanvas);
 
   resizeCanvas();
+
+  // add zoom button controls
+  zoomInButton.addEventListener("click", () => {
+    toggleZoom({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, true);
+  });
+  zoomOutButton.addEventListener("click", () => {
+    toggleZoom({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, false);
+  });
 }
 
 function drawLine(x1, y1, x2, y2) {
@@ -151,7 +180,10 @@ function onMove(e) {
         // graphics current position do we
         // can offset its postion with the
         // mouse position later.
-        graphicsStartPoint = { x: graphics.position.x, y: graphics.position.y };
+        gridCellsStartPoint = {
+          x: gridCells.position.x,
+          y: gridCells.position.y,
+        };
 
         // set the flag to say we are dragging
         isDragging = true;
@@ -161,15 +193,20 @@ function onMove(e) {
       // update the graphics position based
       // on the mouse position, offset with the
       // start and graphics orginal positions
-      graphics.position.x =
-        (e.data.global.x - startPoint.x) / scale + graphicsStartPoint.x;
-      graphics.position.y =
-        (e.data.global.y - startPoint.y) / scale + graphicsStartPoint.y;
+      gridCells.position.x =
+        (e.data.global.x - startPoint.x) / scale + gridCellsStartPoint.x;
+      gridCells.position.y =
+        (e.data.global.y - startPoint.y) / scale + gridCellsStartPoint.y;
 
-      gridLines.position.x =
-        (e.data.global.x - startPoint.x) / scale + graphicsStartPoint.x;
-      gridLines.position.y =
-        (e.data.global.y - startPoint.y) / scale + graphicsStartPoint.y;
+      gridCell.position.x =
+        (e.data.global.x - startPoint.x) / scale + gridCellsStartPoint.x;
+      gridCell.position.y =
+        (e.data.global.y - startPoint.y) / scale + gridCellsStartPoint.y;
+
+      graphics.position.x =
+        (e.data.global.x - startPoint.x) / scale + gridCellsStartPoint.x;
+      graphics.position.y =
+        (e.data.global.y - startPoint.y) / scale + gridCellsStartPoint.y;
     }
   }
 }
@@ -182,16 +219,222 @@ function onUp(e) {
     // if the dragging flag was never set
     // during all the mouse moves then this
     // is a click
-    if (!isDragging) {
-      // if a color has been selected and
-      // the view is zoomed in then this
-      // click is to draw a new pixel
-      if (selectedColor && zoomed) {
-        
-      }
-    }
     isDragging = false;
   }
 }
 
+function toggleZoom(offset, forceZoom) {
+  // toggle the zoomed varable
+  // zoomed = forceZoom ? forceZoom : !zoomed;
+  // scale will equal zoomLevel if zoomed (so 6x bigger),
+  // other otherwise the scale will be 1
+  // scale = zoomed ? zoomLevel : 1;
+}
+
+function renderCell(position, content) {
+  let { x, y } = position;
+
+  let { color, image, size } = content;
+  if (color) {
+    gridCell.beginFill(parseInt("0x" + color), 1);
+    gridCell.drawRect(
+      x * cellSize.width,
+      y * cellSize.height,
+      cellSize.width,
+      cellSize.height
+    );
+  }
+  if (image) {
+    const cellImage = new PIXI.Sprite.from(image);
+    cellImage.width = size * cellSize.width;
+    cellImage.height = size * cellSize.height;
+    cellImage.position.x = x * cellSize.width;
+    cellImage.position.y = y * cellSize.height;
+    graphics.addChild(cellImage);
+  }
+}
+
 setup();
+
+const data = [
+  {
+    position: { x: 0, y: 0 },
+    content: {
+      image: "images/logo.jpg",
+      size: 12,
+    },
+  },
+  {
+    position: { x: 12, y: 0 },
+    content: {
+      image: "images/TSB_Estate_Logo.webp",
+      size: 3,
+    },
+  },
+  {
+    position: { x: 15, y: 10 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 16, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 17, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 18, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 22, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 24, y: 5 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 32, y: 1 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 35, y: 0 },
+    content: {
+      color: "ffffff",
+    },
+  },
+  {
+    position: { x: 38, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 41, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 42, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 43, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 44, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 45, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 46, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 52, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 69, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 70, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 31, y: 1 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 32, y: 1 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 33, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 34, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 35, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 36, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 37, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 38, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 39, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+];
+
+data.forEach((cell) => {
+  renderCell(cell.position, cell.content);
+});
