@@ -127,10 +127,10 @@ function setup() {
 
   // add zoom button controls
   zoomInButton.addEventListener("click", () => {
-    toggleZoom({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, true);
+    toggleZoom('zoomIn');
   });
   zoomOutButton.addEventListener("click", () => {
-    toggleZoom({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, false);
+    toggleZoom('zoomOut');
   });
 }
 
@@ -223,7 +223,14 @@ function onUp(e) {
   }
 }
 
-function toggleZoom(offset, forceZoom) {
+function toggleZoom(type) {
+  if (type === 'zoomIn') {
+    scale += 0.1;
+    canvasContainer.style.transform = `scale(${scale})`;
+  } else {
+    scale -= 0.1;
+    canvasContainer.style.transform = `scale(${scale})`;
+  }
   // toggle the zoomed varable
   // zoomed = forceZoom ? forceZoom : !zoomed;
   // scale will equal zoomLevel if zoomed (so 6x bigger),
