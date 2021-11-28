@@ -2,6 +2,8 @@ let app;
 let container;
 let background;
 let cells;
+let behaviors;
+let graphics;
 let zoomScale = 1;
 let startPoint;
 let containerStartPoint;
@@ -29,18 +31,18 @@ function setup() {
 
   domContainer.appendChild(app.view);
 
-  container = new PIXI.Container();
-
-  container.width = gridSize.width * cellSize.width;
-  container.height = gridSize.height * cellSize.height;
-
   background = new PIXI.Graphics();
 
   const backgroundImage = PIXI.Sprite.from("images/metaverse.png");
 
   background.addChild(backgroundImage);
 
-  container.addChild(background);
+  cells = new PIXI.Graphics();
+  behaviors = new PIXI.Graphics();
+  graphics = new PIXI.Graphics();
+  container = new PIXI.Container();
+  container.width = gridSize.width * cellSize.width;
+  container.height = gridSize.height * cellSize.height;
 
   container.interactive = true;
 
@@ -49,6 +51,10 @@ function setup() {
   container.on("pointerup", onUp);
   container.on("pointerupoutside", onUp);
 
+  container.addChild(background);
+  container.addChild(cells);
+  container.addChild(behaviors);
+  container.addChild(graphics);
   app.stage.addChild(container);
 
   window.addEventListener("resize", resize);
@@ -125,34 +131,72 @@ function onUp(e) {
     // if the dragging flag was never set
     // during all the mouse moves then this
     // is a click
+    if (!isDragging) {
+      // get the mouse position
+      let position = e.data.global;
+      // and check if the mouse is within
+      // the bounds of the graphics
+      const localPosition = container.toLocal(position);
+
+      if (
+        localPosition.x > 0 &&
+        localPosition.x < container.width &&
+        localPosition.y > 0 &&
+        localPosition.y < container.height
+      ) {
+        // if it is then we can assume the user
+        // has clicked on the graphics
+        // and not dragged it. We can use the
+        // mouse position to get the cell
+        // that was clicked on.
+        let x = Math.floor(localPosition.x / cellSize.width);
+        let y = Math.floor(localPosition.y / cellSize.height);
+        const cell = data.find(
+          (cell) => cell.position.x === x && cell.position.y === y
+        );
+        const size = cell.content.size
+        if (size) {
+          behaviors.clear();
+          behaviors.beginFill(cellHoverColor);
+          behaviors.drawRect(
+            x * cellSize.width + 1,
+            y * cellSize.width + 1,
+            cellSize.width * size - 2,
+            cellSize.height * size - 2
+          );
+        }
+      }
+    }
     isDragging = false;
   }
 }
 
-function renderCell(position, content) {
-  let { x, y } = position;
+function renderCells(data) {
+  data.forEach((cell) => {
+    let { position, content } = cell;
+    let { x, y } = position;
+    let { color, image, size } = content;
 
-  let { color, image, size } = content;
-  if (color) {
-    gridCell.beginFill(parseInt("0x" + color), 1);
-    gridCell.drawRect(
+    cells.beginFill(parseInt("0x" + color), 1);
+    cells.drawRect(
       x * cellSize.width + 1,
       y * cellSize.height + 1,
-      cellSize.width,
-      cellSize.height
+      cellSize.width * size - 2,
+      cellSize.height * size - 2
     );
-  }
-  if (image) {
-    const cellImage = new PIXI.Sprite.from(image);
-    cellImage.width = size * cellSize.width;
-    cellImage.height = size * cellSize.height;
-    cellImage.position.x = x * cellSize.width;
-    cellImage.position.y = y * cellSize.height;
-    graphics.addChild(cellImage);
-  }
+    if (image) {
+      const cellImage = new PIXI.Sprite.from(image);
+      cellImage.position.x = x * cellSize.width + 2;
+      cellImage.position.y = y * cellSize.height + 2;
+      cellImage.width = size * cellSize.width - 4;
+      cellImage.height = size * cellSize.height - 4;
+      graphics.addChild(cellImage);
+    }
+  });
 }
+
 zoomInButton.addEventListener("click", () => {
-  if (zoomScale < 1.5) {
+  if (zoomScale < 2) {
     zoomScale += 0.15;
     zoom(zoomScale);
   }
@@ -166,3 +210,264 @@ zoomOutButton.addEventListener("click", () => {
 });
 
 setup();
+
+const data = [
+  {
+    id: 1,
+    position: { x: 0, y: 0 },
+    content: {
+      color: "2ac161",
+      image: "images/logo.jpg",
+      size: 12,
+    },
+  },
+  {
+    position: { x: 12, y: 0 },
+    content: {
+      color: "00b0ff",
+      image: "images/TSB_Estate_Logo.webp",
+      size: 3,
+    },
+  },
+  {
+    position: { x: 14, y: 10 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 15, y: 10 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 16, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 17, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 18, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 22, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 24, y: 5 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 31, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 31, y: 1 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 31, y: 2 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 31, y: 3 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 31, y: 4 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 32, y: 0 },
+    content: {
+      color: "00b0ff",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 33, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 34, y: 0 },
+    content: {
+      color: "2ac161",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 35, y: 0 },
+    content: {
+      color: "ffffff",
+      size: 1,
+    },
+  },
+  {
+    position: { x: 32, y: 1 },
+    content: {
+      color: "2ac161",
+      size: 4,
+    },
+  },
+  {
+    position: { x: 35, y: 0 },
+    content: {
+      color: "ffffff",
+    },
+  },
+  {
+    position: { x: 38, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 41, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 42, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 43, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 44, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 45, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 46, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 52, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 69, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 70, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 31, y: 1 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 32, y: 1 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 33, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 34, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 35, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 36, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 37, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 38, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+  {
+    position: { x: 39, y: 0 },
+    content: {
+      color: "2ac161",
+    },
+  },
+];
+
+renderCells(data);

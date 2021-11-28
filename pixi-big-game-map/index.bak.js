@@ -222,6 +222,11 @@ function onUp(e) {
     // if the dragging flag was never set
     // during all the mouse moves then this
     // is a click
+    if (!isDragging) {
+      // do something here
+      console.log("click");
+    }
+    // clear the dragging flag
     isDragging = false;
   }
 }
