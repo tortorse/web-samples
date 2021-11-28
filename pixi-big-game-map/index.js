@@ -154,7 +154,7 @@ function onUp(e) {
         const cell = data.find(
           (cell) => cell.position.x === x && cell.position.y === y
         );
-        const size = cell.content.size
+        const size = cell.content.size;
         if (size) {
           behaviors.clear();
           behaviors.beginFill(cellHoverColor);
@@ -203,8 +203,8 @@ zoomInButton.addEventListener("click", () => {
 });
 
 zoomOutButton.addEventListener("click", () => {
-  if (zoomScale > 0.55) {
-    zoomScale -= 0.15;
+  if (zoomScale >= 0.18) {
+    zoomScale -= 0.15 * 0.5;
     zoom(zoomScale);
   }
 });
