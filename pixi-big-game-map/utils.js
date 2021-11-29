@@ -22,11 +22,11 @@ function mockArea() {
 
 function mockCells() {
   let row = [];
-  let id = 1483;
+  let id = 1633;
   let count = 12;
-  let startX = 143;
+  let startX = 125;
   let color = "2ac161";
-  let y = 1;
+  let y = 2;
   for (let i = 0; i < count; i++) {
     id += 1;
     row.push({
