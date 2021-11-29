@@ -154,16 +154,22 @@ function onUp(e) {
         const cell = data.find(
           (cell) => cell.position.x === x && cell.position.y === y
         );
-        const size = cell.content.size;
-        if (size) {
-          behaviors.clear();
-          behaviors.beginFill(cellHoverColor);
-          behaviors.drawRect(
-            x * cellSize.width + 1,
-            y * cellSize.width + 1,
-            cellSize.width * size - 2,
-            cellSize.height * size - 2
-          );
+        if (cell) {
+          let { content, size, locatedIn } = cell;
+          if (content && size) {
+            behaviors.clear();
+            behaviors.beginFill(cellHoverColor);
+            behaviors.drawRect(
+              x * cellSize.width + 1,
+              y * cellSize.width + 1,
+              cellSize.width * size - 2,
+              cellSize.height * size - 2
+            );
+          }
+          if (locatedIn) {
+            const mainCell = data.find(cell => cell.id === locatedIn);
+            console.log(mainCell)
+          }
         }
       }
     }
@@ -173,24 +179,25 @@ function onUp(e) {
 
 function renderCells(data) {
   data.forEach((cell) => {
-    let { position, content } = cell;
+    let { position, content, size } = cell;
     let { x, y } = position;
-    let { color, image, size } = content;
-
-    cells.beginFill(parseInt("0x" + color), 1);
-    cells.drawRect(
-      x * cellSize.width + 1,
-      y * cellSize.height + 1,
-      cellSize.width * size - 2,
-      cellSize.height * size - 2
-    );
-    if (image) {
-      const cellImage = new PIXI.Sprite.from(image);
-      cellImage.position.x = x * cellSize.width + 2;
-      cellImage.position.y = y * cellSize.height + 2;
-      cellImage.width = size * cellSize.width - 4;
-      cellImage.height = size * cellSize.height - 4;
-      graphics.addChild(cellImage);
+    if (content && size) {
+      let { color, image } = content;
+      cells.beginFill(parseInt("0x" + color), 1);
+      cells.drawRect(
+        x * cellSize.width + 1,
+        y * cellSize.height + 1,
+        cellSize.width * size - 2,
+        cellSize.height * size - 2
+      );
+      if (image) {
+        const cellImage = new PIXI.Sprite.from(image);
+        cellImage.position.x = x * cellSize.width + 2;
+        cellImage.position.y = y * cellSize.height + 2;
+        cellImage.width = size * cellSize.width - 4;
+        cellImage.height = size * cellSize.height - 4;
+        graphics.addChild(cellImage);
+      }
     }
   });
 }
@@ -215,258 +222,61 @@ const data = [
   {
     id: 1,
     position: { x: 0, y: 0 },
+    size: 12,
     content: {
       color: "2ac161",
       image: "images/logo.jpg",
-      size: 12,
     },
   },
   {
-    position: { x: 12, y: 0 },
-    content: {
-      color: "00b0ff",
-      image: "images/TSB_Estate_Logo.webp",
-      size: 3,
-    },
+    id: 2,
+    position: { x: 1, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 14, y: 10 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 3,
+    position: { x: 2, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 15, y: 10 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 4,
+    position: { x: 3, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 16, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 5,
+    position: { x: 4, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 17, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 6,
+    position: { x: 5, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 18, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 7,
+    position: { x: 6, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 22, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 8,
+    position: { x: 7, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 24, y: 5 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 9,
+    position: { x: 8, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 31, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
+    id: 10,
+    position: { x: 9, y: 0 },
+    locatedIn: 1,
   },
   {
-    position: { x: 31, y: 1 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 31, y: 2 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 31, y: 3 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 31, y: 4 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 32, y: 0 },
-    content: {
-      color: "00b0ff",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 33, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 34, y: 0 },
-    content: {
-      color: "2ac161",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 35, y: 0 },
-    content: {
-      color: "ffffff",
-      size: 1,
-    },
-  },
-  {
-    position: { x: 32, y: 1 },
-    content: {
-      color: "2ac161",
-      size: 4,
-    },
-  },
-  {
-    position: { x: 35, y: 0 },
-    content: {
-      color: "ffffff",
-    },
-  },
-  {
-    position: { x: 38, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 41, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 42, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 43, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 44, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 45, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 46, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 52, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 69, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 70, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 31, y: 1 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 32, y: 1 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 33, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 34, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 35, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 36, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 37, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 38, y: 0 },
-    content: {
-      color: "2ac161",
-    },
-  },
-  {
-    position: { x: 39, y: 0 },
-    content: {
-      color: "2ac161",
-    },
+    id: 11,
+    position: { x: 10, y: 0 },
+    locatedIn: 1,
   },
 ];
 
