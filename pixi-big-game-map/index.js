@@ -52,6 +52,7 @@ function setup() {
   container.on("pointerup", onUp);
   container.on("pointerupoutside", onUp);
 
+  domContainer.addEventListener("mousewheel", onWheel);
   container.addChild(background);
   container.addChild(cells);
   container.addChild(behaviors);
@@ -188,6 +189,10 @@ function onUp(e) {
   }
 }
 
+function onWheel(e) {
+  e.preventDefault();
+}
+
 function renderCells(data) {
   data.forEach((cell) => {
     let { position, content, size } = cell;
@@ -202,7 +207,7 @@ function renderCells(data) {
         cellSize.height * size - 2
       );
       if (image) {
-        const cellImage = new PIXI.Sprite.from(image);
+        const cellImage = PIXI.Sprite.from(image);
         cellImage.position.x = x * cellSize.width + 3;
         cellImage.position.y = y * cellSize.height + 3;
         cellImage.width = size * cellSize.width - 6;

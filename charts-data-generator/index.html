@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charts Data Generator</title>
+  </head>
+  <body>
+    <div style="display: flex; padding: 16px">
+      <div style="flex: 1">
+        <h2>选择图表类型</h2>
+        <div>
+          <input type="radio" id="xy" name="type" value="xy" checked />
+          <label for="xy">折线图、柱状图、条形图、区域图</label>
+        </div>
+        <div>
+          <input type="radio" id="tv" name="type" value="tv" />
+          <label for="tv">饼图、环状图</label>
+        </div>
+
+        <div id="xy-container">
+          <h3>数据量</h3>
+          <input type="number" value="10" id="size" />
+          <h3>x 轴起始数据</h3>
+          <input type="datetime-local" id="x-start" />
+          <h3>x 轴格式</h3>
+          <select id="xFormat">
+            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+            <option value="MM-DD">MM-DD</option>
+            <option value="HH:mm">HH:mm</option>
+          </select>
+          <h3>x 轴数据间隔</h3>
+          <p>1 小时 = 3600 秒</p>
+          <p>1 天 = 86400 秒</p>
+          <input type="number" value="86400" id="interval" /> 秒
+          <h3>y 轴数据最大值</h3>
+          <input type="number" value="100" id="y-max" />
+          <h3>y 轴数据最小值</h3>
+          <input type="number" value="0" id="y-min" />
+          <h3>数据系列</h3>
+          <input type="number" value="0" id="series-count" />
+          <div class="series"></div>
+          <button id="generate-xy">生成</button>
+        </div>
+        <div id="tv-container" style="display: none">
+          <h3>份数</h3>
+          <input type="number" id="partition" value="2" />
+          <h3>每份名称和值</h3>
+          <div id="kv-container"></div>
+          <button id="generate-tv">生成</button>
+        </div>
+      </div>
+
+      <div style="flex: 1">
+        <textarea style="width: 100%; height: 600px" id="json"></textarea>
+      </div>
+    </div>
+    <script src="//cdn.jsdelivr.net/npm/dayjs@1.10.7/dayjs.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
