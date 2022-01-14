@@ -122,11 +122,11 @@ function randomColor(opacity) {
   return hexColor;
 }
 
-const rTree = new RBush(16);
-console.log(rTree);
+const rTree = new RBush(data.children.length);
 data.children.forEach((item) => {
   rTree.insert({ ...item.coordinates, tag: item.tag, id: item.id });
 });
+
 
 let rectangles = [];
 let lastId;
@@ -135,14 +135,24 @@ rTree.data.children.forEach((rect) => {
     rTree,
     rect.maxX,
     rect.maxY,
-    2,
+    3,
     (item) => item.id !== rect.id
   );
-  const neighbor = neighbors[0];
-  console.log(rect.tag, rect.id, neighbor);
+  const neighbor = neighbors.sort((a, b) => {
+    return (
+      Math.abs(rect.maxY - a.maxY) -
+      Math.abs(rect.maxY - b.maxY) +
+      Math.abs(rect.maxX - a.maxX) -
+      Math.abs(rect.maxX - b.maxX)
+    );
+  })[0];
+  // const neighbor = neighbors[0];
+  console.log(rect.tag, neighbors, neighbor);
   const rectangleId = rect.id + "|" + neighbor.id;
+  const rectangleTag = rect.tag + "|" + neighbor.tag;
   const rectangle = {
     id: rectangleId,
+    tag: rectangleTag,
     minX: Math.min(rect.minX, neighbor.minX),
     maxX: Math.max(rect.maxX, neighbor.maxX),
     minY: Math.min(rect.minY, neighbor.minY),
