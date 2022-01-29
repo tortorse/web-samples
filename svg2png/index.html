@@ -6,16 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SVG to PNG Convertor</title>
     <style>
+      .content {
+        display: flex;
+        gap: 16px;
+      }
+      #preview,
+      #result {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .item {
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        padding: 8px;
+      }
       .item img {
-        width: 240px;
-        height: 180px;
+        max-width: 80px;
+        max-height: 80px;
+        object-fit: contain;
+        flex-grow: 0;
+        display: block;
+      }
+      .item .header {
+        margin-bottom: 8px;
+      }
+      .item .header .title::after {
+        content: ":";
       }
     </style>
   </head>
   <body>
-    <div><input type="file" id="file" accept=".svg" multiple /></div>
-    <div id="preview"></div>
-    <div id="result"></div>
+    <div class="wrapper">
+      <div class="file-selector">
+        <input type="file" id="file" accept=".svg" multiple />
+      </div>
+      <div class="content">
+        <div id="preview"></div>
+        <div id="result"></div>
+      </div>
+    </div>
     <script src="//unpkg.com/svg2png-wasm"></script>
     <script src="./index.js"></script>
   </body>

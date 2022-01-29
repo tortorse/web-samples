@@ -31,6 +31,8 @@ function readFile(file) {
 function renderResultImage(buffer) {
   const box = document.createElement("div");
   box.setAttribute("class", "item");
+  const header = document.createElement("div");
+  header.setAttribute("class", "header");
   const size = document.createElement("span");
   const blob = new Blob([buffer], { type: "image/png" });
   size.innerText = `${blob.size}Byte`;
@@ -44,12 +46,23 @@ function renderResultImage(buffer) {
 function renderPreviewImage(file) {
   const box = document.createElement("div");
   box.setAttribute("class", "item");
+  const header = document.createElement("div");
+  header.setAttribute("class", "header");
+  const title = document.createElement("span");
+  title.setAttribute("class", "title");
+  title.innerHTML = "Origin SVG";
   const size = document.createElement("span");
   size.innerText = `${file.size}Byte`;
+  const name = document.createElement("span");
+  name.setAttribute("class", "name");
+  name.innerHTML = file.name;
   const image = new Image();
   image.src = getFileURL(file);
+  header.appendChild(title);
+  header.appendChild(name);
+  header.appendChild(size);
+  box.appendChild(header);
   box.appendChild(image);
-  box.appendChild(size);
   preivewContainer.appendChild(box);
 }
 
