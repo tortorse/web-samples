@@ -22,6 +22,7 @@ const iconMap = [
 ];
 
 async function batchResize(buffer) {
+  preview.innerHTML = "";
   console.time("icon-resize");
   for (let i = 0; i < iconMap.length; i++) {
     const image = new Image();
