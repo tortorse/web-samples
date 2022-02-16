@@ -22,11 +22,13 @@ const iconMap = [
 ];
 
 async function batchResize(buffer) {
+  const channels = getChannels(buffer).hasAlpha ? 4 : 3;
+  console.log(buffer);
   preview.innerHTML = "";
   console.time("icon-resize");
   for (let i = 0; i < iconMap.length; i++) {
     const image = new Image();
-    const blob = await resize(buffer, { size: iconMap[i] });
+    const blob = await resize(buffer, { size: iconMap[i], channels });
     const url = URL.createObjectURL(blob);
     image.src = url;
     preview.appendChild(image);
@@ -34,12 +36,12 @@ async function batchResize(buffer) {
   console.timeEnd("icon-resize");
 }
 async function resize(buffer, options) {
-  const { size } = options;
+  const { size, channels } = options;
   const imageLoader = await wasm_image_loader();
   const avif = await wasm_avif();
   const uint8Array = new Uint8Array(buffer);
-  const decoded = imageLoader.decode(uint8Array, uint8Array.length, 4);
-  const { channels, height, width } = imageLoader.dimensions();
+  const decoded = imageLoader.decode(uint8Array, uint8Array.length, channels);
+  const { height, width } = imageLoader.dimensions();
   const resized = imageLoader.resize(
     decoded,
     width,
@@ -69,4 +71,20 @@ async function resize(buffer, options) {
   imageLoader.free();
   avif.free();
   return blob;
+}
+
+function getChannels(buffer) {
+  const view = new DataView(buffer);
+  if (view.getUint32(0) === 0x89504e47 && view.getUint32(4) === 0x0d0a1a0a) {
+    // We know format field exists in the IHDR chunk. The chunk exists at
+    // offset 8 +8 bytes (size, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8(8 + 8 + 8);
+    var type = view.getUint8(8 + 8 + 9);
+    return {
+      depth: depth,
+      type: ["G", "", "RGB", "Indexed", "GA", "", "RGBA"][type],
+      buffer: view.buffer,
+      hasAlpha: type === 4 || type === 6, // grayscale + alpha or RGB + alpha
+    };
+  }
 }
