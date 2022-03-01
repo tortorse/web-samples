@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio</title>
 </head>
+
 <body>
   <div>
     <h2>&lt;audio&gt;</audio></h2>
     <div>
-      <audio src="music.mp3" controls muted></audio>
+      <audio src="music.mp3" controls></audio>
     </div>
-    <input id="progress" type="range" min="0" value="0">
-    <button id="play">Play</button>
-    <button id="pause">Pause</button>
-    <button id="stop">Stop</button>
-    <input id="volume" type="range" min="0" max="100" value="100">
+    <h2>
+      Audio()
+    </h2>
+    <div>
+      <input id="progress" type="range" min="0" value="0">
+      <button id="play">Play</button>
+      <button id="pause">Pause</button>
+      <button id="stop">Stop</button>
+      <input id="volume" type="range" min="0" max="100" value="100">
+    </div>
+    <h2>AudioContext</h2>
+    <div>
+      <div id="controls">
+        <button id="play-audio">Play</button>
+        <button id="stop-audio">Stop</button>
+      </div>
+    </div>
   </div>
   <script src='./index.js'></script>
 </body>
+
 </html>
