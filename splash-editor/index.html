@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Splash Editor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div
+        class="frame"
+        style="transform: scale(0.8); transform-origin: top center"
+      >
+        <div class="canvas"></div>
+        <div class="phone w320 h568 aquamarine"></div>
+        <div class="phone w375 h667 aqua"></div>
+        <div class="phone w375 h812 cyan"></div>
+        <div class="phone w414 h896 cadetblue"></div>
+        <div class="phone w414 h736 cornflowerblue"></div>
+        <div class="phone w1080-2x h1920-2x crimson"></div>
+        <div class="phone w1080-2x h2340-2x blueviolet"></div>
+        <div class="phone w1440-3x h3120-3x darkmagenta"></div>
+      </div>
+      <div class="operation">
+        <input class="scale" value="80" type="range" />
+        <input class="color-picker" type="color" value="#ffffff" />
+        <button class="add-text">Add Text</button>
+      </div>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>

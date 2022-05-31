@@ -1,0 +1,134 @@
+html,
+body {
+  height: 100%;
+}
+
+.wrapper {
+  display: flex;
+  gap    : 24px;
+}
+
+.frame {
+  width   : 542px;
+  height  : 1172px;
+}
+
+.canvas {
+  position: relative;
+}
+
+.phone {
+  position : absolute;
+  border   : 1px solid #ccc;
+  left     : 50%;
+  top      : 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.w320 {
+  width: 320px;
+}
+
+.w375 {
+  width: 375px;
+}
+
+.w414 {
+  width: 414px;
+}
+
+.w1080-2x {
+  width: calc(1080px / 2);
+}
+
+.w1440-3x {
+  width: calc(1440px / 3);
+}
+
+.h568 {
+  height: 568px;
+}
+
+.h667 {
+  height: 667px;
+}
+
+.h812 {
+  height: 812px;
+}
+
+.h667 {
+  height: 667px;
+}
+
+.h896 {
+  height: 896px;
+}
+
+.h736 {
+  height: 736px;
+}
+
+.h1920-2x {
+  height: calc(1920px / 2);
+}
+
+.h2340-2x {
+  height: calc(2340px / 2);
+}
+
+.h3120-3x {
+  height: calc(3120px / 3);
+}
+
+.aquamarine {
+  border-color: aquamarine;
+}
+
+.aqua {
+  border-color: aqua;
+}
+
+.cyan {
+  border-color: cyan;
+}
+
+.cadetblue {
+  border-color: cadetblue;
+}
+
+.cornflowerblue {
+  border-color: cornflowerblue;
+}
+
+.crimson {
+  border-color: crimson;
+}
+
+.blueviolet {
+  border-color: blueviolet;
+}
+
+.darkmagenta {
+  border-color: darkmagenta;
+}
+
+.canvas {
+  width : 100%;
+  height: 100%;
+}
+
+.text {
+  position: absolute;
+  z-index : 9
+}
+
+.vertical-align-center {
+  top      : 50%;
+  transform: translateY(-50%);
+}
+
+.horizontal-align-center {
+  left     : 50%;
+  transform: translateX(-50%);
+}
