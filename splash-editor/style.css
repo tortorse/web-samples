@@ -9,8 +9,8 @@ body {
 }
 
 .frame {
-  width   : 542px;
-  height  : 1172px;
+  width : 542px;
+  height: 1172px;
 }
 
 .canvas {
@@ -118,7 +118,8 @@ body {
   height: 100%;
 }
 
-.text {
+.text,
+.image {
   position: absolute;
   z-index : 9
 }

@@ -11,7 +11,7 @@
     <div class="wrapper">
       <div
         class="frame"
-        style="transform: scale(0.8); transform-origin: top center"
+        style="transform: scale(1); transform-origin: top center"
       >
         <div class="canvas"></div>
         <div class="phone w320 h568 aquamarine"></div>
@@ -24,9 +24,17 @@
         <div class="phone w1440-3x h3120-3x darkmagenta"></div>
       </div>
       <div class="operation">
-        <input class="scale" value="80" type="range" />
+        <select class="scale" value="100">
+          <option value="100">100%</option>
+          <option value="75">75%</option>
+          <option value="50">50%</option>
+        </select>
         <input class="color-picker" type="color" value="#ffffff" />
         <button class="add-text">Add Text</button>
+        <input class="file-picker" type="file" accept=".png,.jpg" />
+        <button class="add-image">Add Image</button>
+        <button class="generate">Generate Images</button>
+        <canvas class="preview" width="375" height="667"></canvas>
       </div>
     </div>
     <script src="./index.js"></script>
