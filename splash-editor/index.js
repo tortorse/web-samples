@@ -36,16 +36,15 @@ function createText() {
 }
 
 addImageButton.addEventListener("click", () => {
-  createImage();
+  imageFilePicker.click();
 });
-
-let imageFile;
 
 imageFilePicker.addEventListener("change", (e) => {
-  imageFile = e.target.files[0];
+  const imageFile = e.target.files[0];
+  createImage(imageFile);
 });
 
-function createImage() {
+function createImage(imageFile) {
   const image = new Image();
   image.draggable = true;
   image.className = "image vertical-align-center horizontal-align-center";
@@ -98,13 +97,14 @@ function onDragEnd(e) {
   const canvasPosition = canvas.getBoundingClientRect();
   e.target.classList.remove("vertical-align-center");
   e.target.classList.remove("horizontal-align-center");
+  const { width, height } = e.target.getBoundingClientRect();
   e.target.style.left = `${
-    (e.pageX - window.scrollX - canvasPosition.left) / scaleRatio
+    (e.pageX - window.scrollX - canvasPosition.left - width / 2) / scaleRatio
   }px`;
   e.target.style.top = `${
-    (e.pageY - window.scrollY - canvasPosition.top) / scaleRatio
+    (e.pageY - window.scrollY - canvasPosition.top - height / 2) / scaleRatio
   }px`;
-  e.target.style.transform = "translateX(-50%) translateY(-50%)";
+  // e.target.style.transform = "translateX(-50%) translateY(-50%)";
 }
 
 function onDoubleClick(e) {
@@ -116,9 +116,7 @@ function onBlur(e) {
   e.target.contentEditable = false;
 }
 
-function onclick(e) {
-  console.log(e);
-}
+function onclick(e) {}
 
 generateButton.addEventListener("click", () => {
   draw();
@@ -131,12 +129,30 @@ function draw() {
     canvas.style.backgroundColor === ""
       ? "#ffffff"
       : canvas.style.backgroundColor;
-  ctx.fillRect(0, 0, 375, 667);
+  ctx.fillRect(0, 0, 542, 1172);
   if (elements) {
     elements.forEach((element) => {
-      ctx.fillStyle = "#ff00ff";
-      ctx.font = "48px serif";
-      ctx.fillText("Hello world", 10, 50);
+      if (element.nodeName === "SPAN") {
+        ctx.fillStyle =
+          element.style.color === "" ? "#000000" : element.style.color;
+        ctx.font = `${element.style.fontSize} serif`;
+        const x = element.style.left
+          ? Number(element.style.left.replace("px", ""))
+          : 10;
+        const y = element.style.top
+          ? Number(element.style.top.replace("px", ""))
+          : 10;
+        ctx.fillText(element.innerText, x, y);
+      }
+      if (element.nodeName === "IMG") {
+        const x = element.style.left
+          ? Number(element.style.left.replace("px", ""))
+          : 10;
+        const y = element.style.top
+          ? Number(element.style.top.replace("px", ""))
+          : 10;
+        ctx.drawImage(element, x, y);
+      }
     });
   }
 }
