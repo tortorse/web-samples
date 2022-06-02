@@ -1,4 +1,4 @@
-const colorPicker = document.querySelector(".color-picker");
+const fillColorPicker = document.querySelector(".fill-color-picker");
 const canvas = document.querySelector(".canvas");
 const scale = document.querySelector(".scale");
 const frame = document.querySelector(".frame");
@@ -7,8 +7,15 @@ const addImageButton = document.querySelector(".add-image");
 const imageFilePicker = document.querySelector(".file-picker");
 const preview = document.querySelector(".preview");
 const generateButton = document.querySelector(".generate");
-colorPicker.addEventListener("change", (e) => {
+const strokeColorPicker = document.querySelector(".stroke-color-picker");
+let selectedElementId;
+fillColorPicker.addEventListener("input", (e) => {
   canvas.style.backgroundColor = e.target.value;
+});
+
+strokeColorPicker.addEventListener("input", (e) => {
+  const selectedElement = document.querySelector(`#${selectedElementId}`);
+  selectedElement.style.color = e.target.value;
 });
 
 let scaleRatio = 1;
@@ -55,10 +62,23 @@ function createImage(imageFile) {
   getImageBehavior(id);
   elements.push(image);
 }
+frame.addEventListener("dragover", (e) => {
+  onDragOver(e);
+});
+frame.addEventListener("dragenter", (e) => {
+  onDragEnter(e);
+});
+frame.addEventListener("click", (e) => {
+  if (selectedElementId) {
+    const selectedElement = document.querySelector(`#${selectedElementId}`);
+    selectedElement.classList.remove("selected");
+    selectedElementId = undefined;
+  }
+});
 function getTextBehavior(id) {
   const textNode = document.querySelector(`#${id}`);
   textNode.addEventListener("click", (e) => {
-    onclick(e);
+    onClick(e);
   });
   textNode.addEventListener("blur", (e) => {
     onBlur(e);
@@ -69,6 +89,7 @@ function getTextBehavior(id) {
   textNode.addEventListener("dragstart", (e) => {
     onDragStart(e);
   });
+
   textNode.addEventListener("drag", (e) => {
     onDrag(e);
   });
@@ -90,10 +111,16 @@ function getImageBehavior(id) {
   });
 }
 
-function onDragStart(e) {}
+function onDragStart(e) {
+  e.dataTransfer.setData("text", e.target.id);
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.dropEffect = "move";
+}
 
 function onDrag(e) {}
 function onDragEnd(e) {
+  e.preventDefault();
+
   const canvasPosition = canvas.getBoundingClientRect();
   e.target.classList.remove("vertical-align-center");
   e.target.classList.remove("horizontal-align-center");
@@ -104,19 +131,27 @@ function onDragEnd(e) {
   e.target.style.top = `${
     (e.pageY - window.scrollY - canvasPosition.top - height / 2) / scaleRatio
   }px`;
-  // e.target.style.transform = "translateX(-50%) translateY(-50%)";
 }
 
+function onDragEnter(e) {
+  e.preventDefault();
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+}
 function onDoubleClick(e) {
   e.target.contentEditable = true;
   e.target.focus();
 }
-
+function onClick(e) {
+  e.stopPropagation();
+  selectedElementId = e.target.id;
+  e.target.classList.add("selected");
+}
 function onBlur(e) {
   e.target.contentEditable = false;
 }
-
-function onclick(e) {}
 
 generateButton.addEventListener("click", () => {
   draw();
@@ -124,35 +159,47 @@ generateButton.addEventListener("click", () => {
 
 function draw() {
   const ctx = preview.getContext("2d");
-
+  const _canvas = {
+    width: 540,
+    height: 1170,
+  };
+  preview.width = _canvas.width;
+  preview.height = _canvas.height;
   ctx.fillStyle =
     canvas.style.backgroundColor === ""
       ? "#ffffff"
       : canvas.style.backgroundColor;
-  ctx.fillRect(0, 0, 542, 1172);
+  ctx.fillRect(0, 0, _canvas.width, _canvas.height);
   if (elements) {
     elements.forEach((element) => {
+      const { width, height } = element.getBoundingClientRect();
       if (element.nodeName === "SPAN") {
         ctx.fillStyle =
           element.style.color === "" ? "#000000" : element.style.color;
         ctx.font = `${element.style.fontSize} serif`;
         const x = element.style.left
           ? Number(element.style.left.replace("px", ""))
-          : 10;
+          : _canvas.width / 2 - width / 2;
         const y = element.style.top
           ? Number(element.style.top.replace("px", ""))
-          : 10;
+          : _canvas.height / 2 - height / 2;
         ctx.fillText(element.innerText, x, y);
       }
       if (element.nodeName === "IMG") {
         const x = element.style.left
           ? Number(element.style.left.replace("px", ""))
-          : 10;
+          : _canvas.width / 2 - width / 2;
         const y = element.style.top
           ? Number(element.style.top.replace("px", ""))
-          : 10;
+          : _canvas.height / 2 - height / 2;
         ctx.drawImage(element, x, y);
       }
     });
   }
+
+  preview.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    window.open(url);
+    URL.revokeObjectURL(url);
+  });
 }

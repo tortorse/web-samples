@@ -30,20 +30,18 @@
             <option value="75">75%</option>
             <option value="50">50%</option>
           </select>
-          <input class="color-picker" type="color" value="#ffffff" />
+          <input class="fill-color-picker" type="color" value="#ffffff" />
           <button class="add-text">T</button>
+          <div class="text-config-panel">
+            <input class="stroke-color-picker" type="color" value="#000000" />
+          </div>
           <input class="file-picker" type="file" accept=".png,.jpg" />
           <button class="add-image">
             <img src="./assets/image.svg" width="16" height="16" />
           </button>
           <button class="generate">Generate Images</button>
         </div>
-        <canvas
-          class="preview"
-          width="542"
-          height="1172"
-          style="scale: 0.5"
-        ></canvas>
+        <canvas class="preview" style="scale: 0.5"></canvas>
       </div>
     </div>
     <script src="./index.js"></script>

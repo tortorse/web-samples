@@ -137,3 +137,11 @@ body {
 .file-picker {
   display: none;
 }
+
+.preview {
+  display: none;
+}
+
+.selected {
+  border: 1px solid cornflowerblue
+}
