@@ -7,6 +7,7 @@
     <title>Splash Editor</title>
     <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
     <div class="wrapper">
       <div
@@ -33,7 +34,15 @@
           <input class="fill-color-picker" type="color" value="#ffffff" />
           <button class="add-text">T</button>
           <div class="text-config-panel">
-            <input class="stroke-color-picker" type="color" value="#000000" />
+            <div class="text-color">
+              <span>A</span>
+              <input
+                class="stroke-color-picker"
+                type="color"
+                value="#000000"
+                disabled
+              />
+            </div>
           </div>
           <input class="file-picker" type="file" accept=".png,.jpg" />
           <button class="add-image">

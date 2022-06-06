@@ -8,6 +8,12 @@ const imageFilePicker = document.querySelector(".file-picker");
 const preview = document.querySelector(".preview");
 const generateButton = document.querySelector(".generate");
 const strokeColorPicker = document.querySelector(".stroke-color-picker");
+const textConfigPanel = document.querySelector(".text-config-panel");
+const textColor = document.querySelector(".text-color");
+
+textColor.addEventListener("click", (e) => {
+  strokeColorPicker.click();
+});
 let selectedElementId;
 fillColorPicker.addEventListener("input", (e) => {
   canvas.style.backgroundColor = e.target.value;
@@ -17,6 +23,23 @@ strokeColorPicker.addEventListener("input", (e) => {
   const selectedElement = document.querySelector(`#${selectedElementId}`);
   selectedElement.style.color = e.target.value;
 });
+
+strokeColorPicker.addEventListener("change", (e) => {
+  elementUnselected();
+});
+
+function elementSelected() {
+  const selectedElement = document.querySelector(`#${selectedElementId}`);
+  selectedElement.classList.add("selected");
+  strokeColorPicker.disabled = false;
+}
+
+function elementUnselected() {
+  const selectedElement = document.querySelector(`#${selectedElementId}`);
+  selectedElement.classList.remove("selected");
+  selectedElementId = undefined;
+  strokeColorPicker.disabled = true;
+}
 
 let scaleRatio = 1;
 
@@ -70,9 +93,7 @@ frame.addEventListener("dragenter", (e) => {
 });
 frame.addEventListener("click", (e) => {
   if (selectedElementId) {
-    const selectedElement = document.querySelector(`#${selectedElementId}`);
-    selectedElement.classList.remove("selected");
-    selectedElementId = undefined;
+    elementUnselected();
   }
 });
 function getTextBehavior(id) {
@@ -147,7 +168,7 @@ function onDoubleClick(e) {
 function onClick(e) {
   e.stopPropagation();
   selectedElementId = e.target.id;
-  e.target.classList.add("selected");
+  elementSelected();
 }
 function onBlur(e) {
   e.target.contentEditable = false;
