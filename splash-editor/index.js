@@ -11,6 +11,8 @@ const strokeColorPicker = document.querySelector(".stroke-color-picker");
 const textConfigPanel = document.querySelector(".text-config-panel");
 const textColor = document.querySelector(".text-color");
 
+
+
 textColor.addEventListener("click", (e) => {
   strokeColorPicker.click();
 });
@@ -32,6 +34,7 @@ function elementSelected() {
   const selectedElement = document.querySelector(`#${selectedElementId}`);
   selectedElement.classList.add("selected");
   strokeColorPicker.disabled = false;
+  textColor.classList.remove("disabled");
 }
 
 function elementUnselected() {
@@ -39,6 +42,7 @@ function elementUnselected() {
   selectedElement.classList.remove("selected");
   selectedElementId = undefined;
   strokeColorPicker.disabled = true;
+  textColor.classList.add("disabled");
 }
 
 let scaleRatio = 1;
