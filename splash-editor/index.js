@@ -11,8 +11,81 @@ const strokeColorPicker = document.querySelector(".stroke-color-picker");
 const textConfigPanel = document.querySelector(".text-config-panel");
 const textColor = document.querySelector(".text-color");
 
+const devices = [
+  {
+    name: "iPhone 13",
+    lw: "390",
+    lh: "844",
+    pw: "1170",
+    ph: "2532",
+    scale: "3",
+  },
+  {
+    name: "iPhone 13 mini",
+    lw: "375",
+    lh: "812",
+    pw: "1080",
+    ph: "2340",
+    scale: "3",
+  },
+  {
+    name: "iPhone 13 Pro Max",
+    lw: "428",
+    lh: "926",
+    pw: "1284",
+    ph: "2778",
+    scale: "3",
+  },
+  {
+    name: "iPhone SE 2nd gen",
+    lw: "375",
+    lh: "667",
+    pw: "750",
+    ph: "1334",
+    scale: "2",
+  },
+  {
+    name: "iPhone 11 Pro Max",
+    lw: "414",
+    lh: "896",
+    pw: "1242",
+    ph: "2688",
+    scale: "3",
+  },
+  {
+    name: "iPhone 8 Plus",
+    lw: "414",
+    lh: "736",
+    pw: "1080",
+    ph: "1920",
+    scale: "3",
+  },
+  {
+    name: "iPhone 7 Plus",
+    lw: "476",
+    lh: "847",
+    pw: "1242",
+    ph: "2208",
+    scale: "3",
+  },
+  {
+    name: "iPhone SE 1st gen",
+    lw: "320",
+    lh: "568",
+    pw: "640",
+    ph: "1136",
+    scale: "2",
+  },
+  { name: "iPhone 4S", lw: "320", lh: "480", pw: "640", ph: "960", scale: "2" },
+];
 
-
+devices.forEach((device) => {
+  const deviceBox = document.createElement("div");
+  deviceBox.classList.add("phone");
+  deviceBox.style.width = `${device.lw}px`;
+  deviceBox.style.height = `${device.lh}px`;
+  frame.appendChild(deviceBox);
+});
 textColor.addEventListener("click", (e) => {
   strokeColorPicker.click();
 });

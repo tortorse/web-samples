@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List Style</title>
+    <style>
+      .origin {
+        list-style: simp-chinese-informal;
+      }
+      .pseudo {
+        list-style: none;
+        padding-inline-start: 8px;
+      }
+      .pseudo > li::before {
+        content: attr(data-index) "、";
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2>css list style</h2>
+      <ol class="origin">
+        <li>春眠不觉晓</li>
+        <li>处处闻啼鸟</li>
+        <li>夜来风雨声</li>
+        <li>花落知多少</li>
+      </ol>
+    </div>
+    <div>
+      <h2>css pseudo element</h2>
+      <ol class="pseudo">
+        <li data-index="一">春眠不觉晓</li>
+        <li data-index="二">处处闻啼鸟</li>
+        <li data-index="三">夜来风雨声</li>
+        <li data-index="四">花落知多少</li>
+      </ol>
+    </div>
+  </body>
+</html>
